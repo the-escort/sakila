@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.sakila.mapper.CountryMapper">
+    <resultMap id="country" type="Country">
+        <id property="countryId" column="country_id"/>
+        <result property="country" column="country"/>
+        <result property="lastUpdate" column="last_update"/>
+    </resultMap>
+
+    <resultMap id="countryDetail" type="Country" extends="country">
+        <collection property="cities" ofType="City" resultMap="com.example.sakila.mapper.CityMapper.city"/>
+    </resultMap>
+
+    <select id="selectDetail" parameterType="int" resultMap="countryDetail">
+        SELECT co.*, ci.*
+        FROM country co
+                 JOIN city ci ON co.country_id = ci.country_id
+        WHERE co.country_id = #{country_id}
+    </select>
+
+    <select id="select" parameterType="int" resultMap="country">
+        SELECT *
+        FROM country
+        WHERE country_id = #{country_id}
+    </select>
+</mapper>
